@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.naming.ConfigurationException;
 
+import net.spy.memcached.compat.SpyObject;
 import net.spy.memcached.ops.Operation;
 import net.spy.memcached.ops.OperationCallback;
 import net.spy.memcached.ops.OperationStatus;
@@ -49,7 +50,7 @@ import net.spy.memcached.tapmessage.TapStream;
 /**
  * A tap client for memcached.
  */
-public class TapClient {
+public class TapClient extends SpyObject {
   protected BlockingQueue<Object> rqueue;
   protected final HashMap<TapStream, TapConnectionProvider> omap;
   protected long messagesRead;
@@ -238,6 +239,36 @@ public class TapClient {
       omap.put(ts, conn);
     }
     return ts;
+  }
+
+  public void tapDeregister(final String id) throws IOException,
+  ConfigurationException {
+      final TapConnectionProvider conn = new TapConnectionProvider(addrs);
+
+      conn.broadcastOp(new BroadcastOpFactory() {
+
+          public Operation newOp(final MemcachedNode n,
+                  final CountDownLatch latch) {
+
+              Operation op = conn.getOpFactory().tapDeregister(id,
+                      new OperationCallback() {
+
+                  @Override
+                  public void receivedStatus(OperationStatus status) {
+                      System.out.println(String.format("Deregister TAP client %s returned %d from node %s",
+                              id, status, n));
+                  }
+
+                  @Override
+                  public void complete() {
+                      latch.countDown();
+                  }
+
+              });
+
+              return op;
+          }
+      });
   }
 
   private void tapAck(TapConnectionProvider conn, MemcachedNode node,

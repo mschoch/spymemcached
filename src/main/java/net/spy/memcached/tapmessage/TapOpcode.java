@@ -81,7 +81,12 @@ public enum TapOpcode {
   /**
    * Defines the end of a checkpoint
    */
-  END_CHECKPOINT((byte) 0x47);
+  END_CHECKPOINT((byte) 0x47),
+
+  /**
+   * Defines a deregister client message
+   */
+  DEREGISTER_CLIENT((byte) 0x9e);
 
   /**
    * The opcode value.

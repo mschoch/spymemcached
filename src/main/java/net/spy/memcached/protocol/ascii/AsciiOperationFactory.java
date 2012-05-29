@@ -172,12 +172,23 @@ public class AsciiOperationFactory extends BaseOperationFactory {
         + " protocol");
   }
 
+  public TapOperation tapBackfill(String id, Map<Short,Long> checkpointMap, OperationCallback cb) {
+    throw new UnsupportedOperationException("Tap is not supported for ASCII"
+        + " protocol");
+  }
+
   @Override
   public TapOperation tapCustom(String id, RequestMessage message,
       OperationCallback cb) {
     throw new UnsupportedOperationException("Tap is not supported for ASCII"
         + " protocol");
   }
+
+  @Override
+    public TapOperation tapDeregister(String id, OperationCallback cb) {
+      throw new UnsupportedOperationException("Tap is not supported for ASCII"
+              + " protocol");
+    }
 
   @Override
   public TapOperation tapAck(TapOpcode opcode, int opaque,

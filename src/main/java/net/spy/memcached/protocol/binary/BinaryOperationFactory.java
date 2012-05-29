@@ -175,9 +175,17 @@ public class BinaryOperationFactory extends BaseOperationFactory {
     return new TapBackfillOperationImpl(id, date, cb);
   }
 
+  public TapOperation tapBackfill(String id, Map<Short,Long> checkpointMap, OperationCallback cb) {
+    return new TapBackfillOperationImpl(id, checkpointMap, cb);
+  }
+
   public TapOperation tapCustom(String id, RequestMessage message,
       OperationCallback cb) {
     return new TapCustomOperationImpl(id, message, cb);
+  }
+
+  public TapOperation tapDeregister(String id, OperationCallback cb) {
+    return new TapDeregisterOperationImpl(id, cb);
   }
 
   public TapOperation

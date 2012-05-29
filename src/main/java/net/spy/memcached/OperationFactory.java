@@ -288,6 +288,20 @@ public interface OperationFactory {
   TapOperation tapBackfill(String id, long date, OperationCallback cb);
 
   /**
+   * Creates a tap backfill stream using checkpoints
+   *
+   * See <a href="http://www.couchbase.org/wiki/display/membase/TAP+Protocol">
+   * http://www.couchbase.org/wiki/display/membase/TAP+Protocol</a> for more
+   * details on the tap protocol.
+   *
+   * @param id The name for the TAP connection
+   * @param checkpointMap The map of closed checkpoints for each vbucket
+   * @param cb The status callback.
+   * @return The tap operation used to create and handle the stream.
+   */
+  TapOperation tapBackfill(String id, Map<Short,Long> checkpointMap, OperationCallback cb);
+
+  /**
    * Creates a custom tap stream.
    *
    * See <a href="http://www.couchbase.org/wiki/display/membase/TAP+Protocol">
@@ -305,6 +319,19 @@ public interface OperationFactory {
    */
   TapOperation tapCustom(String id, RequestMessage message,
       OperationCallback cb);
+
+  /**
+   * Deregister a tap stream.
+   *
+   * See <a href="http://www.couchbase.org/wiki/display/membase/TAP+Protocol">
+   * http://www.couchbase.org/wiki/display/membase/TAP+Protocol</a> for more
+   * details on the tap protocol.
+   *
+   * @param id The name for the TAP connection
+   * @param cb The status callback
+   * @return The tap operation used to deregister the stream.
+   */
+  TapOperation tapDeregister(String id, OperationCallback cb);
 
   /**
    * Sends a tap ack message to the server.

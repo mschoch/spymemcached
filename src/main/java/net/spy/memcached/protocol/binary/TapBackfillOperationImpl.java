@@ -23,6 +23,7 @@
 
 package net.spy.memcached.protocol.binary;
 
+import java.util.Map;
 import java.util.UUID;
 
 import net.spy.memcached.ops.OperationCallback;
@@ -40,12 +41,21 @@ public class TapBackfillOperationImpl extends TapOperationImpl implements
     TapOperation {
   private final String id;
   private final long date;
+  private final Map<Short, Long> checkpoints;
 
   TapBackfillOperationImpl(String id, long date, OperationCallback cb) {
     super(cb);
     this.id = id;
     this.date = date;
+    this.checkpoints = null;
   }
+
+  TapBackfillOperationImpl(String id, Map<Short,Long> checkpoints, OperationCallback cb) {
+      super(cb);
+      this.id = id;
+      this.date = 0l;
+      this.checkpoints = checkpoints;
+    }
 
   @Override
   public void initialize() {
@@ -54,7 +64,6 @@ public class TapBackfillOperationImpl extends TapOperationImpl implements
     message.setOpcode(TapOpcode.REQUEST);
     message.setFlags(TapRequestFlag.BACKFILL);
     message.setFlags(TapRequestFlag.SUPPORT_ACK);
-    message.setFlags(TapRequestFlag.FIX_BYTEORDER);
     if (id != null) {
       message.setName(id);
     } else {
@@ -62,6 +71,20 @@ public class TapBackfillOperationImpl extends TapOperationImpl implements
     }
 
     message.setBackfill(date);
+
+    if(checkpoints != null) {
+        System.out.println("checkpoints not null,size " + checkpoints.size());
+        short[] vbucketList = new short[checkpoints.size()];
+        int i = 0;
+        for (short v : checkpoints.keySet()) {
+            vbucketList[i++] = v;
+        }
+        message.setFlags(TapRequestFlag.LIST_VBUCKETS);
+        message.setVbucketlist(vbucketList);
+        message.setFlags(TapRequestFlag.CHECKPOINT);
+        message.setvBucketCheckpoints(checkpoints);
+    }
+
     setBuffer(message.getBytes());
   }
 

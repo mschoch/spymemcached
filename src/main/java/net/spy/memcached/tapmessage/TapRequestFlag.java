@@ -66,6 +66,11 @@ public enum TapRequestFlag {
   CHECKPOINT((int) 0x40),
 
   /**
+   * Tap registered client.
+   */
+  REGISTERED_CLIENT((int) 0x80),
+
+  /**
    * Tap request fixed byteorder.
    *
    * Some releases of Couchbase Server (at least through 1.8.0) send data in
