@@ -1,3 +1,7 @@
+# This fork is the temporary home of changes to improve TAP clients in Java
+
+This will produce builds with a -mschoch suffix. 
+
 # Building
 
 Spymemcached can be compiled using Apache Ant by running the following
